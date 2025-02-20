@@ -104,7 +104,7 @@ func (t pullTransportFixture) layerResponse() (*http.Response, error) {
 
 func (t pullTransportFixture) RoundTrip(r *http.Request) (*http.Response, error) {
 	repoURL := fmt.Sprintf(
-		"http://%s/v2/%s", t.imageName.GetRegistry(), t.imageName.GetRepository())
+		"https://%s/v2/%s", t.imageName.GetRegistry(), t.imageName.GetRepository())
 	manifestURL := fmt.Sprintf(
 		"%s/manifests/%s", repoURL, t.imageName.GetTag())
 	imageConfigURL := repoURL + "/blobs/sha256:" + testutil.SampleImageConfigDigest

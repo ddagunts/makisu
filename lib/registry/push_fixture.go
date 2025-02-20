@@ -74,7 +74,7 @@ func (r uploadRequest) getCommitURL(digest image.Digest) string {
 }
 
 func repoURL(image image.Name) string {
-	return fmt.Sprintf("http://%s/v2/%s", image.GetRegistry(), image.GetRepository())
+	return fmt.Sprintf("https://%s/v2/%s", image.GetRegistry(), image.GetRepository())
 }
 
 type responseOverride struct {

@@ -26,7 +26,6 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff"
-	"github.com/uber/makisu/lib/log"
 )
 
 var retryableCodes = map[int]struct{}{
@@ -320,22 +319,6 @@ func Send(method, rawurl string, options ...SendOption) (*http.Response, error) 
 	var resp *http.Response
 	for {
 		resp, err = client.Do(req)
-		// Retry without tls. During migration there would be a time when the
-		// component receiving the tls request does not serve https response.
-		// TODO (@evelynl): disable retry after tls migration.
-		if err != nil && shouldFallbackToHTTP(req, resp, opts) && !opts.httpFallbackDisabled {
-			log.Warnf("Failed to send https request: %s. Retrying with http...", err)
-			originalErr := err
-			resp, err = fallbackToHTTP(client, method, opts)
-			if err != nil {
-				// Sometimes the request fails for a reason unrelated to https.
-				// To keep this reason visible, we always include the original
-				// error.
-				err = fmt.Errorf(
-					"failed to fallback from https to http, original https error: %s,\n"+
-						"fallback http error: %s", originalErr, err)
-			}
-		}
 		if err != nil || shouldRetry(resp, opts) {
 			d := opts.retry.backoff.NextBackOff()
 			if d == backoff.Stop {

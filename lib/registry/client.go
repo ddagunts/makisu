@@ -38,9 +38,9 @@ import (
 )
 
 const (
-	baseManifestQuery = "http://%s/v2/%s/manifests/%s"
-	baseLayerQuery    = "http://%s/v2/%s/blobs/%s"
-	baseStartQuery    = "http://%s/v2/%s/blobs/uploads/"
+	baseManifestQuery = "https://%s/v2/%s/manifests/%s"
+	baseLayerQuery    = "https://%s/v2/%s/blobs/%s"
+	baseStartQuery    = "https://%s/v2/%s/blobs/uploads/"
 )
 
 // Client is the interface through which we can interact with a docker registry. It is used when
@@ -441,6 +441,7 @@ func (c DockerRegistryClient) pushLayerHelper(layerDigest image.Digest, isConfig
 	} else {
 		log.Infof("* Started pushing layer %s", layerDigest)
 	}
+
 	URL, err = c.pushLayerContent(layerDigest, URL)
 	if err != nil {
 		return fmt.Errorf("push layer content %s: %w", layerDigest, err)
@@ -561,7 +562,7 @@ func (c DockerRegistryClient) pushOneLayerChunk(location string, start, endInclu
 	}
 	resp, err := httputil.Send(
 		"PATCH",
-		location,
+		c.registry + location,
 		httputil.SendClient(c.client),
 		opt,
 		httputil.SendTimeout(c.config.Timeout),
@@ -597,7 +598,7 @@ func (c DockerRegistryClient) commitLayer(location string) error {
 	}
 	resp, err := httputil.Send(
 		"PUT",
-		location,
+		c.registry + location,
 		httputil.SendClient(c.client),
 		opt,
 		httputil.SendTimeout(c.config.Timeout),

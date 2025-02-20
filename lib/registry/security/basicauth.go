@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	basePingQuery         = "http://%s/v2/"
+	basePingQuery         = "https://%s/v2/"
 	registryVersionHeader = "Docker-Distribution-Api-Version"
 )
 
